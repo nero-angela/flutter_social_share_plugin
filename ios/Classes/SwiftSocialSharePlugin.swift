@@ -75,7 +75,6 @@ public class SwiftSocialSharePlugin: NSObject, FlutterPlugin, SharingDelegate {
                 if let instagramURL = instagramURL {
                     if UIApplication.shared.canOpenURL(instagramURL) {
                         instagramShare(path)
-//                        result(nil)
                     } else {
                         let instagramLink = "itms-apps://itunes.apple.com/us/app/apple-store/id389801252"
                         if #available(iOS 10.0, *) {
@@ -106,7 +105,7 @@ public class SwiftSocialSharePlugin: NSObject, FlutterPlugin, SharingDelegate {
                 if let fbURL = fbURL {
                     if UIApplication.shared.canOpenURL(fbURL) {
                         facebookShare(path)
-//                        result(nil)
+                        result(true)
                     } else {
                         let fbLink = "itms-apps://itunes.apple.com/us/app/apple-store/id284882215"
                         if #available(iOS 10.0, *) {
@@ -218,12 +217,12 @@ public class SwiftSocialSharePlugin: NSObject, FlutterPlugin, SharingDelegate {
             content.photos = [photo]
             let controller = UIApplication.shared.delegate?.window??.rootViewController
             ShareDialog.show(viewController: controller, content: content, delegate: self)
+        } else {
+            self._channel.invokeMethod("onCancel", arguments: nil)
         }
     }
 
-    func facebookShareLink(_ quote: String,
-                           url: String)
-    {
+    func facebookShareLink(_ quote: String,url: String) {
         let content = ShareLinkContent()
         content.contentURL = URL(string: url)
         content.quote = quote
@@ -231,9 +230,7 @@ public class SwiftSocialSharePlugin: NSObject, FlutterPlugin, SharingDelegate {
         ShareDialog.show(viewController: controller, content: content, delegate: self)
     }
 
-    func twitterShare(_ text: String,
-                      url: String)
-    {
+    func twitterShare(_ text: String, url: String) {
         let shareString = "https://twitter.com/intent/tweet?text=\(text)&url=\(url)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         if let shareUrl = URL(string: shareString) {
             if #available(iOS 10.0, *) {
